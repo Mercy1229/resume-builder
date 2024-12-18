@@ -1,4 +1,4 @@
-import '../App.css'
+import "../App.css";
 export const parseLatexToReadableText = (latex) => {
   const nameMatch = latex.match(
     /\\fontsize\{\d+\s*pt\}\{\d+\s*pt\}\\selectfont\s*(.+)/
@@ -6,9 +6,11 @@ export const parseLatexToReadableText = (latex) => {
   const name = nameMatch ? nameMatch[1] : "";
   const locationMatch = latex.match(/\\mbox\{(.*?Location)\}/);
   const location = locationMatch ? locationMatch[1] : "";
-  
+
   return latex
     .replace(/%.*$/gm, "")
+    .replace(/```/gm, "")
+    .replace(/latex/gm, "")
     .replace(/\\usepackage\[[^\]]*\]\{[^\}]*\}/g, "")
     .replace(/\\documentclass\[[^\]]*\]\{[^\}]*\}/g, "\\documentclass{article}")
     .replace(/\\newcommand\{\\AND\}[\s\S]*?\\sbox\\ANDbox\{\$\|\$\}/g, "")
@@ -46,7 +48,8 @@ export const parseLatexToReadableText = (latex) => {
         <div class="twocol2 text-right">${rightContent.trim()}</div>
           <div class="twocol1">${leftContent.trim()}</div>
           
-        </div>`)
+        </div>`
+    )
     .replace(/\[leftmargin=\*\]/, "")
     .replace(/\[leftmargin=\*\]/, "")
     .replace(/\[leftmargin=\*\]/, "")
@@ -60,6 +63,8 @@ export const parseLatexToReadableText = (latex) => {
     .replace(/\\begin\{onecolentry\}/g, '<div class="one-col-entry">')
     .replace(/\\end\{onecolentry\}/g, "</div>")
     .replace(/\[leftmargin=\*\]/, "")
+    .replace(/\[noitemsep,leftmargin=\*\]/, "")
+    .replace(/\[nonitemsep=\]/, "")
     .replace(/\\begin\{highlights\}/g, '<ul class="highlights">')
     .replace(/\\end\{highlights\}/g, "</ul>")
     .replace(/\[leftmargin=\*\]/, "")
@@ -97,6 +102,6 @@ export const parseLatexToReadableText = (latex) => {
     .replace(/\s{2,}/g, " ")
     .replace(/\\[a-zA-Z]+\*?\{.*?\}/g, "")
     .replace(/\\[a-zA-Z]+/g, "")
-    .replace(/\\%/g, '<span>%</span>')
-    .replace(/[\{\}]/g, ""); 
+    .replace(/\\%/g, "<span>%</span>")
+    .replace(/[\{\}]/g, "");
 };

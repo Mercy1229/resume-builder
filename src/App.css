@@ -1,38 +1,55 @@
-.App {
+.ql-editor {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 2.5cm;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  width: 21cm;
+  min-height: 29.7cm;
+  font-family: Times New Roman, serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  color: #000;
+  margin: 0 auto;
+}
+.ql-editor:focus {
+  border-color: #007bff;
+}
+.ql-editor h1 {
+  font-size: 24pt;
   text-align: center;
+  margin-bottom: 20px;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.ql-editor h2 {
+  font-size: 14pt;
+  font-weight: bold;
+  border-bottom: 1px solid #000;
+  margin: 15px 0 10px 0;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.custom-controls {
   display: flex;
-  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.editor-wrapper {
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.twocol {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  padding: 0.5rem;
 }
-
-.App-link {
-  color: #61dafb;
+.twocol1 {
+  text-align: left;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.twocol2 {
+  text-align: right;
 }

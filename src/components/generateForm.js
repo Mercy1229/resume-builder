@@ -1,194 +1,138 @@
-// import axios from "axios";
-// import { useState } from "react";
-
-// export default function GenerateForm() {
-//   const [job_description, setJob_description] = useState('');
-//   const [section, setSection] = useState('');
-//   const [uploaded_file, setUploaded_file] = useState(null);
-//   const handleClick = async (e) => {
-//     e.preventDefault();
-//     const formData = new FormData();
-//     formData.append('job_description', job_description);
-//     formData.append('sections', section);
-//     formData.append('uploaded_file', uploaded_file);
-  
-//     try {
-//       const response = await axios.post(
-//         'http://13.127.236.24:5000/generate_resume',
-//         formData,
-//       );
-//       console.log(response.data);
-//     } catch (error) {
-//       console.error('Error:', error.response || error.message);
-//     }
-//   };
-  
-//   return (
-//     <div className="flex flex-col ld:w-1/2 md:w-1/2 m-5 mx-auto sm:w-full">
-//       <form className="w-full leading-8">
-//         <div className="w-full flex flex-col my-2">       
-//         <label className="text-start font-bold text-xl">
-//           Job Description:
-//           </label> 
-//           <textarea
-//             value={job_description}
-//             onChange={(e) => setJob_description(e.target.value)}
-//             className="border p-2"
-//           />
-//         </div>
-//         <div className="w-full flex flex-col my-2">
-//         <label className="text-start font-bold text-xl">Section:</label>
-//           <textarea
-//             value={section}
-//             onChange={(e) => setSection(e.target.value)}
-//             className="border p-2"
-//           />
-//         </div>
-//         <div className="w-full flex flex-col my-2">
-//         <label className="text-start font-bold text-xl">
-//           Upload File: </label>
-//           <input
-//             type="file"
-//             onChange={(e) => setUploaded_file(e.target.files[0])}
-//             className="border p-2"
-//           />
-//         </div>
-//       </form>
-//       <button
-//         type="button"
-//         className="p-2 border bg-blue-800 text-white"
-//         onClick={handleClick}
-//       >
-//         Submit
-//       </button>
-//     </div>
-//   );
-// }
-
-// import axios from "axios";
-// import { useState } from "react";
-
-// export default function GenerateForm() {
-//   const [job_description, setJob_description] = useState('');
-//   const [section, setSection] = useState('');
-//   const [uploaded_file, setUploaded_file] = useState(null);
-
-//   const handleClick = async (e) => {
-//     e.preventDefault();
-
-//     const formData = new FormData();
-//     formData.append('job_description', job_description);
-//     formData.append('sections', section);
-//     formData.append('uploaded_file', uploaded_file);
-
-//     try {
-//       const response = await axios.post(
-//         'http://13.127.236.24:5000/generate_resume',  // Since you added proxy in package.json, this will be forwarded to the backend
-//         formData,
-//         {
-//           headers: {
-//             'Content-Type': 'multipart/form-data',
-//           },
-//           responseType: 'blob'  // To handle the file response as blob
-//         }
-//       );
-
-//       // Create a blob and initiate the file download
-//       const blob = new Blob([response.data], { type: 'application/octet-stream' });
-//       const link = document.createElement('a');
-//       link.href = URL.createObjectURL(blob);
-//       link.download = 'generated_resume.tex';  // Adjust as needed (can be .pdf or other formats)
-//       link.click();  // Trigger the file download
-//     } catch (error) {
-//       console.error('Error:', error.response || error.message);
-//     }
-//   };
-
-//   return (
-//     <div className="flex flex-col w-1/2 md:w-1/2 m-5 mx-auto sm:w-full">
-//       <form className="w-full leading-8">
-//         <div className="w-full flex flex-col my-2">
-//           <label className="text-start font-bold text-xl">Job Description:</label>
-//           <textarea
-//             value={job_description}
-//             onChange={(e) => setJob_description(e.target.value)}
-//             className="border p-2"
-//           />
-//         </div>
-//         <div className="w-full flex flex-col my-2">
-//           <label className="text-start font-bold text-xl">Section:</label>
-//           <textarea
-//             value={section}
-//             onChange={(e) => setSection(e.target.value)}
-//             className="border p-2"
-//           />
-//         </div>
-//         <div className="w-full flex flex-col my-2">
-//           <label className="text-start font-bold text-xl">Upload File:</label>
-//           <input
-//             type="file"
-//             onChange={(e) => setUploaded_file(e.target.files[0])}
-//             className="border p-2"
-//           />
-//         </div>
-//       </form>
-//       <button
-//         type="button"
-//         className="p-2 border bg-blue-800 text-white"
-//         onClick={handleClick}
-//       >
-//         Submit
-//       </button>
-//     </div>
-//   );
-// }
-
-
+import React, { useState } from "react";
 import axios from "axios";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function GenerateForm() {
-  const [jobDescription, setJobDescription] = useState('');
-  const [section, setSection] = useState('');
-  const [file, setFile] = useState(null);
+const ResumeGenerator = () => {
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [jobDescription, setJobDescription] = useState("");
+  const [sections, setSections] = useState("");
+  const [style, setStyle] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const handleFileChange = (e) => {
+    setUploadedFile(e.target.files[0]);
+  };
 
-  const handleSubmit = async (e) => {
+  const handleTextChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "job_description") {
+      setJobDescription(value);
+    } else if (name === "sections") {
+      setSections(value);
+    } else if (name === "style") {
+      setStyle(value);
+    }
+  };
+
+  const handleClick = async (e) => {
     e.preventDefault();
-
-    const formData = new FormData();
-    formData.append('job_description', jobDescription);
-    formData.append('sections', section);
-    formData.append('uploaded_file', file);
+    if (!uploadedFile) {
+      alert("Please upload a resume.");
+      return;
+    }
+    setLoading(true);
+    const formDataToSend = new FormData();
+    formDataToSend.append("uploaded_file", uploadedFile);
+    formDataToSend.append("job_description", jobDescription);
+    formDataToSend.append("sections", sections);
+    formDataToSend.append("style", style);
 
     try {
-      const response = await axios.post('http://127.0.0.1:5000/generate_resume', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await axios.post(
+        "http://65.2.137.104:5000/generate_resume",
+        formDataToSend,
+        { responseType: "blob" }
+      );
+      const file = new File([response.data], "GeneratedResume.tex", {
+        type: "application/x-tex",
       });
-      console.log(response.data); // Handle the response
+      setLoading(false);
+      navigate("/text-editor", { state: { file } });
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
+      setLoading(false);
+      alert("Error connecting to the API.");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <textarea
-        value={jobDescription}
-        onChange={(e) => setJobDescription(e.target.value)}
-        placeholder="Job Description"
-      />
-      <textarea
-        value={section}
-        onChange={(e) => setSection(e.target.value)}
-        placeholder="Section"
-      />
-      <input
-        type="file"
-        onChange={(e) => setFile(e.target.files[0])}
-      />
-      <button type="submit">Generate Resume</button>
-    </form>
+    <div className="flex flex-col w-1/2 mx-auto p-5">
+      <h2 className="text-2xl text-orange-700 font-bold mx-auto">
+        Resume Generator
+      </h2>
+      <form>
+        <div className="flex flex-col">
+          <label
+            htmlFor="jobDescription"
+            className="text-md font-bold text-left my-2"
+          >
+            Job Description:
+          </label>
+          <textarea
+            id="jobDescription"
+            name="job_description"
+            value={jobDescription}
+            onChange={handleTextChange}
+            rows="4"
+            placeholder="Enter job description here"
+            className="min-h-24 border border-blue-500 rounded-sm p-2"
+            required
+          ></textarea>
+        </div>
+        <div className="flex flex-col">
+          <label
+            htmlFor="sections"
+            className="text-md font-bold text-left my-2"
+          >
+            Sections:
+          </label>
+          <textarea
+            id="sections"
+            name="sections"
+            value={sections}
+            onChange={handleTextChange}
+            rows="4"
+            placeholder="Enter sections here (e.g., Personal Details, Skills, Experience) in JSON format"
+            className="min-h-24 border border-blue-500 rounded-sm p-2"
+            required
+          ></textarea>
+        </div>
+        <div className="flex flex-col">
+          <label htmlFor="resume" className="text-md font-bold text-left my-2">
+            Upload Resume:
+          </label>
+          <input
+            type="file"
+            id="resume"
+            name="uploaded_file"
+            onChange={handleFileChange}
+            required
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="text-md font-bold text-left my-2">Style:</label>
+          <textarea
+            type="text"
+            id="resume"
+            name="style"
+            onChange={handleTextChange}
+            className="min-h-24 border border-blue-500 rounded-sm p-2"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          onClick={handleClick}
+          disabled={isLoading}
+          className={`w-1/2 p-2 mx-auto text-white bg-blue-900 mt-5 ${
+            isLoading ? "cursor-not-allowed bg-gray-500" : "hover:bg-blue-700"
+          }`}
+        >
+          {isLoading ? "Generating..." : "Generate"}
+        </button>
+      </form>
+    </div>
   );
-}
+};
+
+export default ResumeGenerator;

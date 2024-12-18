@@ -1,11 +1,16 @@
-
-import './App.css';
-import GenerateForm from './components/generateForm';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.css";
+import GenerateForm from "./components/generateForm";
+import TextEditor from "./components/TextEditor";
 function App() {
   return (
     <div className="App">
-      <h1 className='text-orange-600 text-2xl'>Resume Builder</h1>
-      <GenerateForm />
+      <BrowserRouter>
+        <Routes>
+          <Route index path="/" element={<GenerateForm />} />
+          <Route path="/text-editor" element={<TextEditor />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
